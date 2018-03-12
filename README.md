@@ -60,7 +60,7 @@ cat Makefile
 ##  Rscript csv_script2.r
 ##
 ## data3.csv: csv_script3.r
-##  Rscript csv_script3.rkk
+##  Rscript csv_script3.r
 ```
 
 
