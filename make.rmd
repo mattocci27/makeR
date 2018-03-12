@@ -1,6 +1,10 @@
 # File-based Make for R files
 
-**DISCLAIMER**: This is an experimental repository to generate and visualize Makefile for R projects. It only supports specific conditions. Please be careful when you run `make` outside your test repository.
+**DISCLAIMER**: This is an experimental repository to generate and visualize Makefile for R projects. It only supports specific conditions (comprehensive arguments are not implemented). Please be careful when you run `make` outside your test repository.
+
+## The idea
+
+`makeR` checks all R scripts in the directory, and determines file dependency based on keys in the R scripts such as `read.csv`, `read_csv`, `source`, `load`... `makeR` determines file target based on keys such as `save.image`, `write.csv`, `ggsave`...
 
 ## Description
 
@@ -14,6 +18,8 @@ install.packages("processx")
 ```
 
 ## Example
+
+The current directory contains three R scripts (`csv_script1-3.r`) that generate csv files (`data1-3.csv`). `analysis.r` will do some analyses using those csv files and produce a figure (`fig1.png`) and a rda file (`fit.rda`). `make_fun` function makes Makefile based on the above.
 
 ```{r}
 library(tidyverse)

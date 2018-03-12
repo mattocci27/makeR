@@ -1,4 +1,4 @@
-library(dplyr)
+library(tidyverse)
 
 c <- rnorm(200)
 d <- rnorm(200, c)

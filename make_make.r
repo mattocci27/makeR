@@ -1,8 +1,9 @@
-library(dplyr)
+library(tidyverse)
 library(stringr)
 target_first_line <- function() {
   files <- list.files()
-  files2 <- files[str_detect(files, "\\.r$|\\.rmd$|\\.sh$")]
+  #files2 <- files[str_detect(files, "\\.r$|\\.rmd$|\\.sh$")]
+  files2 <- files[str_detect(files, "\\.r$|\\.sh$")]
   target_new <- NULL
   for (i in 1:length(files2)) {
     Lines <- readLines(paste(files2[i]))
@@ -23,7 +24,8 @@ target_first_line <- function() {
 
 make_fun <- function(output){
   files <- list.files()
-  files2 <- files[str_detect(files, "\\.r$|\\.rmd$|\\.sh$")]
+  #files2 <- files[str_detect(files, "\\.r$|\\.rmd$|\\.sh$")]
+  files2 <- files[str_detect(files, "\\.r$|\\.sh$")]
   files2 <- files2[files2 != "make_make.r" & files2 != "vis.r"]
 
   target_vec <- target_first_line()
