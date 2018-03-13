@@ -2,8 +2,6 @@
 
 **DISCLAIMER**: This is an experimental repository to generate and visualize Makefile for R projects. It only supports specific conditions (comprehensive arguments are not implemented). Please be careful when you run `make` outside your test repository.
 
-## The idea
-
 `makeR` checks all R scripts in the directory, and determines file dependency based on keys in the R scripts such as `read.csv`, `read_csv`, `source`, `load`... `makeR` determines file target based on keys such as `save.image`, `write.csv`, `ggsave`...
 
 ## Prerequisites
