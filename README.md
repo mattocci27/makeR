@@ -6,7 +6,7 @@
 
 `makeR` checks all R scripts in the directory, and determines file dependency based on keys in the R scripts such as `read.csv`, `read_csv`, `source`, `load`... `makeR` determines file target based on keys such as `save.image`, `write.csv`, `ggsave`...
 
-## Description
+## Prerequisites
 
 `makeR` requires GNU make and several R packages:
 
@@ -38,7 +38,7 @@ plan <- make_dat_fun("Makefile")
 vis_fun(plan)
 ```
 
-![File network](network.png)
+![Visualization of Makefile](network.png)
 
 To see the content of Makefile on your terminal:
 
@@ -64,9 +64,6 @@ cat Makefile
 ##  Rscript csv_script3.r
 ```
 
-
-
-
 To make your R project on your terminal:
 
 ```{bash}
@@ -77,3 +74,9 @@ To make your R project on your R console:
 ```{r}
 run("make")
 ```
+
+## Issues
+
+- Rmarkdown files are not supported.
+- Arguments to specify file dependency are not implemented.
+- Analysis will be redundant when there are multiple targets from a single R script.

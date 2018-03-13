@@ -6,7 +6,7 @@
 
 `makeR` checks all R scripts in the directory, and determines file dependency based on keys in the R scripts such as `read.csv`, `read_csv`, `source`, `load`... `makeR` determines file target based on keys such as `save.image`, `write.csv`, `ggsave`...
 
-## Description
+## Prerequisites
 
 `makeR` requires GNU make and several R packages:
 

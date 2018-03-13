@@ -15,4 +15,3 @@ data2.csv: csv_script2.r
 
 data3.csv: csv_script3.r
 	Rscript csv_script3.r
-
