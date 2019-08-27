@@ -1,0 +1,10 @@
+^\.DS_Store$
+^\.history$
+.git
+.gitignore
+Makefile
+LICENSE
+tests/*
+^README\.md$
+^cran-comments\.md$
+build.rmd

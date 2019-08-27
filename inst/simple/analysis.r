@@ -1,4 +1,6 @@
-library(tidyverse)
+library(dplyr)
+library(readr)
+library(ggplot2)
 
 d <- read_csv("data.csv")
 d2 <- read_csv("data2.csv")

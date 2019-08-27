@@ -1,0 +1,18 @@
+```{r}
+a <- rnorm(100)
+
+mv fig1.png inst/simple/images/fig1.png
+mv fit.rda inst/simple/data/fit.rda
+
+mv data.csv data/data.csv
+mv data2.csv data/data2.csv
+mv data3.csv data/data3.csv
+
+mv make.html tests/make.html
+mv make.rmd tests/make.rmd
+
+mv network.html tests/network.html
+mv network.png tests/network.png
+
+path <- ex_dir
+```

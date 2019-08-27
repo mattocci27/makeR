@@ -1,0 +1,173 @@
+
+# Check
+roxygen2::roxygenise()
+devtools::document() 
+devtools::check("~/Dropbox/blog/makeR")
+devtools::build("~/Dropbox/blog/makeR")
+```
+
+# Build and install
+
+```{r}
+devtools::check("~/Dropbox/blog/makeR")
+devtools::build("~/Dropbox/blog/makeR")
+install.packages("~/Dropbox/blog/MakeR_0.0.1.tar.gz")
+library(MakeR)
+
+
+tmp <- tempdir()
+ex_dir <- file.path(system.file("simple", package = "MakeR"), "")
+system(paste("tree", ex_dir))
+make_fun(ex_dir, "Makefile")
+system(paste0("cat ", ex_dir, "Makefile"))
+
+
+plan <- make_dat_fun(paste0(ex_dir,"Makefile"))
+vis_fun(plan)
+
+run("tree", ex_dir)
+run("make", ex_dir)
+
+
+function(x){}
+
+x <- "Makefile"
+
+moge <- readLines(x)
+moge2 <- moge[-1:-3]
+
+df1 <- tibble(target = moge2[(1:length(moge2)) %% 3 == 1] %>%
+              str_split(., ":") %>% 
+              sapply(., "[[", 1),
+            depends = moge2[(1:length(moge2)) %% 3 == 1] %>%
+              str_split(., ":") %>% 
+              sapply(., "[[", 2),
+            commands = moge2[(1:length(moge2)) %% 3 == 2]) 
+
+
+tmp <- NULL
+for (i in 2:nrow(df1)) {
+  tmp1 <- df1[i-1, "depends"]
+  tmp2 <- df1[i, "depends"]
+  tar1 <- df1[i-1, "target"] %>% unlist
+  tar2 <- df1[i, "target"] %>% unlist
+  com1 <- df1[i-1, "commands"]
+  com2 <- df1[i, "commands"]
+  if ((tmp1 == tmp2) && (com1 == com2)) {
+    tmp[i] <- paste(tar1, tar2, sep = "_")
+  }  else {
+    tmp[i] <- tar2
+}}
+
+df_dc <- df1 %>%
+  mutate(target = tmp) %>%
+  filter(!is.na(target))
+
+tar_vec <- df_dc$target
+
+writeLines(paste(".PHONY : all"), out, sep = "\n")
+writeLines(paste0("all : ", target_vec), out, sep = "\n\n")
+
+for (i in 1:nrow(df_dc)) {
+  tmp2 <- df_dc[i, ]
+  writeLines(paste(tmp2$target), out, sep = ": ")
+  writeLines(paste(tmp2$depends), out, sep = "\n")
+  writeLines(paste0("\t", tmp2$commands), out, sep = "\n\n")
+}
+
+
+moge2[(1:length(moge2)) %% 3 == 1] %>% str_split(., ":") %>%
+  sapply(., "[[", 1)
+
+moge2[(1:length(moge2)) %% 3 == 2]
+
+
+moge2 <- moge[(1:length(moge)) %% 3 == 2][-1] %>% unique
+
+
+
+moge2 <- readLines("Makefile") %>% unique
+
+str_split(moge, ":")
+
+
+
+moge[4:10]
+
+
+
+```
+#run(paste0("make ", ex_dir))
+system(paste0("make ", ex_dir))
+
+# Install from git
+
+```
+devtools::install_github("mattocci27/LeafArea")
+```
+
+# Test on Linux
+
+```{r}
+ex.dir <- eximg()
+list.files(ex.dir)
+
+run.ij(set.directory = ex.dir, save.image=TRUE, path.imagej = "~/Downloads/ImageJ")
+
+```
+
+# Test on Mac/Win
+
+```{r}
+library(LeafArea)
+ex.dir <- eximg()
+list.files(ex.dir)
+
+res <- run.ij(set.directory = ex.dir, save.image=T)
+
+list.files("~/Desktop/moge2")
+res <- run.ij(set.directory = "~/Desktop/moge2", save.image=T)
+
+```
+
+# note
+
+```
+ori
+"/Applications/ImageJ.app"
+"/Applications/ImageJ/ImageJ.app"
+"/Applications/ImageJ/ImageJ.app"
+"/Applications/ImageJ.app"
+
+
+dest:
+path.imagej, "ImageJ.app/Contents/Resources/Java/ij.jar"
+
+
+
+paths <- c("/Applications/ImageJ.app", "/Applications/ImageJ/ImageJ.app")
+
+i <- 2
+system(paste('which ', paths[i], ' 2>&1', sep = ""), intern = TRUE)
+
+
+imagej <- system("mdfind ImageJ.app", intern = TRUE)[1]
+
+
+ImageJ2 = FALSE
+
+Windows
+"ImageJ/jre/bin/java.exe"
+
+
+Mac
+new ImageJ
+"/Applications/ImageJ.app/update/jars/ij-1.51d.jar"
+
+old ImageJ
+"/Applications/ImageJ.app/Contents/Resources/Java/ij.jar -ijpath"
+
+
+Linux?
+```
+

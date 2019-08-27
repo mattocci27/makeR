@@ -1,8 +1,43 @@
-library(tidyverse)
-library(visNetwork)
-library(stringr)
-library(processx)
+#' vis function
+#'
+#' Make Makefile of your R project
+#'
+#' @family vis functions
+#' @param output Outputfile, typically `Makefile`
+#' @return `make_fun()` returns the input `x` invisibly.
+#' @seealso
+#' @examples
+#' tmp <- tempdir()
+#' ex_dir <- file.path(system.file("simple", package = "MakeR"), "")
+#' system(paste("tree", ex_dir))
+#' make_fun(ex_dir, "Makefile")
+#' system(paste0("cat ", ex_dir, "/Makefile"))
+#' plan <- make_dat_fun(paste0(ex_dir,"Makefile"))
+#' vis_fun(plan)
+#' @export
+vis_fun <- function(make_dat, direction = "LR") {
+  visNetwork(
+             make_dat$nodes,
+             make_dat$edges,
+             shape = make_dat$shape,
+             arrows = make_dat$arrows,
+             group = make_dat$group,
+             width = "100%") %>%
+  visHierarchicalLayout(direction = direction) %>%
+  visGroups(groupname = "command",
+            shape = "circle",
+            color = "#03A9F4") %>%
+  visGroups(groupname = "data",
+            shape = "square",
+            color = "#009688") %>%
+  visGroups(groupname = "figure",
+            shape = "triangle",
+            color = "#FFC107") %>%
+  visLegend(
+            addNodes = make_dat$shape)
+}
 
+#' @export
 get_target <- function(Lines) {
   target <- NULL
   Lines2 <- Lines[!str_detect(Lines, "PHONY|^clean")]
@@ -16,6 +51,7 @@ get_target <- function(Lines) {
   target
 }
 
+#' @export
 get_commands <- function(Lines) {
   com <- NULL
   Lines2 <- Lines[!str_detect(Lines, "PHONY|^clean")]
@@ -28,6 +64,7 @@ get_commands <- function(Lines) {
   com
 }
 
+#' @export
 get_dependency <- function(Lines) {
   dep <- list()
   Lines2 <- Lines[!str_detect(Lines, "PHONY|^clean")]
@@ -48,6 +85,7 @@ get_dependency <- function(Lines) {
 #Lines <- Lines[!str_detect(Lines, "^#")]
 
 
+#' @export
 make_dat_fun <- function(x){
 #  Makefile <- "Makefile"
   Lines <- readLines(paste(x))
@@ -129,28 +167,8 @@ make_dat_fun <- function(x){
   list(nodes = nodes, edges = edges)
 }
 
-vis_fun <- function(make_dat, direction = "LR") {
-  visNetwork(
-             make_dat$nodes,
-             make_dat$edges,
-             shape = make_dat$shape,
-             arrows = make_dat$arrows,
-             group = make_dat$group,
-             width = "100%") %>%
-  visHierarchicalLayout(direction = direction) %>%
-  visGroups(groupname = "command",
-            shape = "circle",
-            color = "#03A9F4") %>%
-  visGroups(groupname = "data",
-            shape = "square",
-            color = "#009688") %>%
-  visGroups(groupname = "figure",
-            shape = "triangle",
-            color = "#FFC107") %>%
-  visLegend(
-            addNodes = make_dat$shape)
-}
 
+#' @export
 debug_make <- function() {
   Lines <- run(commandline = "make --just-print")$stderr
   if (Lines == "") {
