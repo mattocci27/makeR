@@ -35,7 +35,7 @@ make_fun <- function(path = NULL, output = "Makefile", clean = T){
     #Lines <- readLines(paste(path, files2[i], sep = "\\"))
     Lines2 <- Lines[!str_detect(Lines, "^#")]
 
-    dep <- Lines2[str_detect(Lines2, "read_csv|read.csv|source|load")]
+    dep <- Lines2[str_detect(Lines2, "read_csv|read.csv|source|load|\\.stan$")]
     dep2 <- str_split(dep, '"')
     dep3 <- sapply(dep2, "[", 2)
     dep4 <- str_c(dep3, sep = " ", collapse = " ")
@@ -67,8 +67,8 @@ make_fun <- function(path = NULL, output = "Makefile", clean = T){
         tmp2 <-tmp[j,]
         writeLines(paste(tmp2$target4), out, sep = ": ")
         writeLines(paste(tmp2$dep4), out, sep = "\n")
-        #writeLines(paste0("\t", tmp2$com2), out, sep = "\n\n")
-        writeLines(paste0("  ", tmp2$com2), out, sep = "\n\n")
+        writeLines(paste0("\t", tmp2$com2), out, sep = "\n\n")
+        #writeLines(paste0("  ", tmp2$com2), out, sep = "\n\n")
       }
     }
   }
@@ -108,6 +108,7 @@ target_first_line <- function(path) {
 
 #' @export
 make_clean <- function(x){
+ # x <- "Makefile"
   moge <- readLines(x)
   moge2 <- moge[-1:-3]
   df1 <- tibble(target = moge2[(1:length(moge2)) %% 3 == 1] %>%
@@ -118,21 +119,40 @@ make_clean <- function(x){
                 sapply(., "[[", 2),
               commands = moge2[(1:length(moge2)) %% 3 == 2]) 
   tmp <- NULL
+  tar <- NULL
+  label <- NULL
+  tar[1] <- df1[1, "target"] %>% unlist
+  tmp[1] <- df1[1, "depends"] %>% unlist
   for (i in 2:nrow(df1)) {
-    tmp1 <- df1[i-1, "depends"]
-    tmp2 <- df1[i, "depends"]
+    tmp1 <- df1[i-1, "depends"] %>% unlist
+    tmp2 <- df1[i, "depends"] %>% unlist
     tar1 <- df1[i-1, "target"] %>% unlist
     tar2 <- df1[i, "target"] %>% unlist
     com1 <- df1[i-1, "commands"]
     com2 <- df1[i, "commands"]
-    if ((tmp1 == tmp2) && (com1 == com2)) {
-      tmp[i] <- paste(tar1, tar2, sep = "_")
+    if (com1 == com2) {
+      #tar[i] <- paste(tar1, tar2, sep = " ")
+      tar[i] <- str_split(paste(tar[i-1], tar2), " ") %>% unlist %>% unique %>%
+        str_c(., sep = " ", collapse = " ")
+      tmp[i] <- str_split(paste(tmp[i-1], tmp2), " ") %>% unlist %>% unique %>%
+        str_c(., sep = " ", collapse = " ")
+      label[i-1] <- "duplicate"
     }  else {
-      tmp[i] <- tar2
-  }}
+      tar[i] <- tar2
+      tmp[i] <- tmp2
+      label[i-1] <- "check"
+    }
+  }
+  label[nrow(df1)] <- "check"
+
   df_dc <- df1 %>%
-    mutate(target = tmp) %>%
-    filter(!is.na(target))
+    mutate(target = tar) %>%
+    mutate(depends = tmp) %>%
+    mutate(label = label) %>%
+    filter(!is.na(target)) %>%
+    filter(label == "check") %>%
+    mutate(target = str_replace_all(target, " ", "-"))
+
   tar_vec <- df_dc$target %>%
     str_c(., sep = " ", collapse = " ")
   out <- file(x, "w") # write
@@ -140,10 +160,10 @@ make_clean <- function(x){
   writeLines(paste0("all : ", tar_vec), out, sep = "\n\n")
   for (i in 1:nrow(df_dc)) {
     tmp2 <- df_dc[i, ]
-    writeLines(paste(tmp2$target), out, sep = ": ")
+    writeLines(paste(tmp2$target), out, sep = ":")
     writeLines(paste(tmp2$depends), out, sep = "\n")
-    #writeLines(paste0("\t", tmp2$commands), out, sep = "\n\n")
-    writeLines(paste0("  ", tmp2$commands), out, sep = "\n\n")
+    writeLines(paste0("\t", tmp2$commands), out, sep = "\n\n")
+    #writeLines(paste0(tmp2$commands), out, sep = "\n\n")
   }
   close(out)
   #print(paste("Created", x))

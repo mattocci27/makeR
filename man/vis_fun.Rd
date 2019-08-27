@@ -19,9 +19,8 @@ Make Makefile of your R project
 tmp <- tempdir()
 ex_dir <- file.path(system.file("simple", package = "MakeR"), "")
 system(paste("tree", ex_dir))
-make_fun(ex_dir, "Makefile")
-system(paste0("cat ", ex_dir, "/Makefile"))
-plan <- make_dat_fun(paste0(ex_dir,"Makefile"))
+make_fun(ex_dir, "Makefile", clean = FALSE)
+plan <- make_dat_fun(paste0(ex_dir, "Makefile"))
 vis_fun(plan)
 }
 \concept{vis functions}

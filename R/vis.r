@@ -10,9 +10,8 @@
 #' tmp <- tempdir()
 #' ex_dir <- file.path(system.file("simple", package = "MakeR"), "")
 #' system(paste("tree", ex_dir))
-#' make_fun(ex_dir, "Makefile")
-#' system(paste0("cat ", ex_dir, "/Makefile"))
-#' plan <- make_dat_fun(paste0(ex_dir,"Makefile"))
+#' make_fun(ex_dir, "Makefile", clean = FALSE)
+#' plan <- make_dat_fun(paste0(ex_dir, "Makefile"))
 #' vis_fun(plan)
 #' @export
 vis_fun <- function(make_dat, direction = "LR") {
@@ -57,6 +56,7 @@ get_commands <- function(Lines) {
   Lines2 <- Lines[!str_detect(Lines, "PHONY|^clean")]
   for (i in 1:(length(Lines2))) {
     if (str_detect(Lines2[i], "\t")) {
+    #if (str_detect(Lines2[i], "  ")) {
       tmp2 <- str_split(Lines2[i], " ")[[1]][2]
       com <- c(com, tmp2)
     }
