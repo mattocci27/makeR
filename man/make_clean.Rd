@@ -16,12 +16,12 @@ make_clean(x)
 Make Makefile of your R project
 }
 \examples{
-tmp <- tempdir()
-ex_dir <- file.path(system.file("simple", package = "MakeR"), "")
-system(paste("tree", ex_dir))
-make_fun(ex_dir, "Makefile")
-system(paste0("cat ", ex_dir, "/Makefile"))
-make_clean(paste0(ex_dir, "Makefile"))
+#tmp <- tempdir()
+#ex_dir <- file.path(system.file("simple", package = "MakeR"), "")
+#system(paste("tree", ex_dir))
+#make_fun(ex_dir, "Makefile")
+#system(paste0("cat ", ex_dir, "/Makefile"))
+#make_clean(paste0(ex_dir, "Makefile"))
 }
 \seealso{
 Other make functions: \code{\link{make_fun}}

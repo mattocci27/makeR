@@ -15,12 +15,28 @@
 #' make_fun(ex_dir, "Makefile")
 
 #' @export
+#make_fun <- function(path = NULL, output = "Makefile", clean = T, file_omit = NULL){
 make_fun <- function(path = NULL, output = "Makefile", clean = T){
   if (is.null(path)) path <- paste0(getwd(), "/") else path
+
+  #path <- "/home/mattocci/Dropbox/MS/sad_imm/"
+
   files <- list.files(path)
   #files2 <- files[str_detect(files, "\\.r$|\\.rmd$|\\.sh$")]
-  files2 <- files[str_detect(files, "\\.r$|\\.sh$")]
+  #files2 <- files[str_detect(files, "\\.r$|\\.sh$")]
+  files2 <- files[str_detect(files, "\\.r$")]
   files2 <- files2[files2 != "make_make.r" & files2 != "vis.r"]
+ 
+  #file_omit <- NULL
+  #length(file_omit)
+
+  #if (!is.null(file_omit)) 
+  #file_omit <- c("data_cleaning.r", "fig_theme.r")
+  #files3 <- files2
+
+  #for (i in 1:length(file_omit)) {
+  #  files2 <- files2[files2 != file_omit[i]]
+  #}
 
   target_vec <- target_first_line(path)
   #out <- file(paste(output), "w") # write
@@ -35,15 +51,19 @@ make_fun <- function(path = NULL, output = "Makefile", clean = T){
     #Lines <- readLines(paste(path, files2[i], sep = "\\"))
     Lines2 <- Lines[!str_detect(Lines, "^#")]
 
-    dep <- Lines2[str_detect(Lines2, "read_csv|read.csv|source|load|\\.stan$")]
+    dep <- Lines2[str_detect(Lines2, "read_csv|read.csv|read.delim|source|load|\\.stan$|read_delim|read_csv2")]
     dep2 <- str_split(dep, '"')
     dep3 <- sapply(dep2, "[", 2)
-    dep4 <- str_c(dep3, sep = " ", collapse = " ")
-    target <- Lines2[str_detect(Lines2, "ggsave|write.csv|save.image")]
+    dep4 <- str_c(na.omit(dep3), sep = " ", collapse = " ")
+    target <- Lines2[str_detect(Lines2, "ggsave|write.csv|save.image|write_delim|write_csv|write_csv2|write_excel_csv|write_excel_csv_2|write_tsv")]
     target2 <- str_split(target, '"')
     target3 <- sapply(target2, "[", 2)
 
-    target3
+    #target3
+
+    if (length(target3) > 0) target_TF <- is.na(target3) %>% unique
+    if (length(target_TF) > 1) target_TF <- TRUE
+    if ((length(dep2) > 0) && !target_TF) {
 
     com <- files2[i]
     if (length(dep) == 0){
@@ -71,6 +91,9 @@ make_fun <- function(path = NULL, output = "Makefile", clean = T){
         #writeLines(paste0("  ", tmp2$com2), out, sep = "\n\n")
       }
     }
+
+    }
+
   }
   close(out)
   if (clean == T) {
@@ -86,13 +109,14 @@ make_fun <- function(path = NULL, output = "Makefile", clean = T){
 target_first_line <- function(path) {
   files <- list.files(path)
   #files2 <- files[str_detect(files, "\\.r$|\\.rmd$|\\.sh$")]
-  files2 <- files[str_detect(files, "\\.r$|\\.sh$")]
+  files2 <- files[str_detect(files, "\\.r$")]
   target_new <- NULL
   for (i in 1:length(files2)) {
     Lines <- readLines(paste0(path, files2[i]))
    # Lines <- readLines(paste(path, files2[i], "\\"))
     Lines2 <- Lines[!str_detect(Lines, "^#")]
-    target <- Lines2[str_detect(Lines2, "ggsave|write.csv|save.image")]
+    #target <- Lines2[str_detect(Lines2, "ggsave|write.csv|save.image")]
+    target <- Lines2[str_detect(Lines2, "ggsave|write.csv|save.image|write_delim|write_csv|write_csv2|write_excel_csv|write_excel_csv_2|write_tsv")]
     target2 <- str_split(target, '"')
     target3 <- sapply(target2, "[", 2)
     target_new <- c(target_new, target3)
@@ -109,6 +133,7 @@ target_first_line <- function(path) {
 #' @export
 make_clean <- function(x){
  # x <- "Makefile"
+#  x <- paste0(path, output)
   moge <- readLines(x)
   moge2 <- moge[-1:-3]
   df1 <- tibble(target = moge2[(1:length(moge2)) %% 3 == 1] %>%

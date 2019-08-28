@@ -16,3 +16,12 @@ mv network.png tests/network.png
 
 path <- ex_dir
 ```
+
+# make
+``````
+```
+xxxx.rda: xxx.csv xxx.r xxx.sbatch
+  sh xxx.sh
+
+```
+

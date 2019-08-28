@@ -8,3 +8,4 @@ tests/*
 ^README\.md$
 ^cran-comments\.md$
 build.rmd
+/inst/hpc/*
