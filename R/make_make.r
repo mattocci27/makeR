@@ -16,21 +16,27 @@
 
 #' @export
 #make_fun <- function(path = NULL, output = "Makefile", clean = T, file_omit = NULL){
-make_fun <- function(path = NULL, output = "Makefile", clean = T){
+make_fun <- function(path = NULL, output = "Makefile", dir_omit = NULL , clean = T){
   if (is.null(path)) path <- paste0(getwd(), "/") else path
 
   #path <- "/home/mattocci/Dropbox/MS/sad_imm/"
 
-  files <- list.files(path)
-  #files2 <- files[str_detect(files, "\\.r$|\\.rmd$|\\.sh$")]
+  #files <- list.files(path)
+  files <- list.files(path, recursive = T, include.dir = T)
+  files2 <- files[str_detect(files, "\\.r$|\\.rmd$")]
   #files2 <- files[str_detect(files, "\\.r$|\\.sh$")]
-  files2 <- files[str_detect(files, "\\.r$")]
+  #files2 <- files[str_detect(files, "\\.r$")]
   files2 <- files2[files2 != "make_make.r" & files2 != "vis.r"]
  
   #file_omit <- NULL
   #length(file_omit)
+  #dir_omit <- "old/"
 
-  #if (!is.null(file_omit)) 
+  if (!is.null(dir_omit)) {
+    for (i in 1:length(dir_omit)) {
+      files2 <- files2[!str_detect(files2, dir_omit[i])]
+    }
+  }
   #file_omit <- c("data_cleaning.r", "fig_theme.r")
   #files3 <- files2
 
@@ -107,9 +113,11 @@ make_fun <- function(path = NULL, output = "Makefile", clean = T){
 
 #' @export
 target_first_line <- function(path) {
-  files <- list.files(path)
+  #files <- list.files(path)
+  files <- list.files(path, recursive = T, include.dir = T)
   #files2 <- files[str_detect(files, "\\.r$|\\.rmd$|\\.sh$")]
-  files2 <- files[str_detect(files, "\\.r$")]
+  #files2 <- files[str_detect(files, "\\.r$")]
+  files2 <- files[str_detect(files, "\\.r$|\\.rmd$")]
   target_new <- NULL
   for (i in 1:length(files2)) {
     Lines <- readLines(paste0(path, files2[i]))
