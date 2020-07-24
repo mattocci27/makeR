@@ -8,9 +8,9 @@
 #' @seealso
 #' @examples
 #' tmp <- tempdir()
-#' ex_dir <- file.path(system.file("simple", package = "MakeR"), "")
-#' system(paste("tree", ex_dir))
-#' make_fun(ex_dir, "Makefile", clean = FALSE)
+#' ex_dir <- file.path(system.file("simple", package = "MakeR2"), "")
+#' system(paste("ls", ex_dir))
+#' make_fun(ex_dir, clean = FALSE)
 #' plan <- make_dat_fun(paste0(ex_dir, "Makefile"))
 #' vis_fun(plan)
 #' @export
@@ -36,7 +36,6 @@ vis_fun <- function(make_dat, direction = "LR") {
             addNodes = make_dat$shape)
 }
 
-#' @export
 get_target <- function(Lines) {
   target <- NULL
   Lines2 <- Lines[!str_detect(Lines, "PHONY|^clean")]
@@ -50,7 +49,6 @@ get_target <- function(Lines) {
   target
 }
 
-#' @export
 get_commands <- function(Lines) {
   com <- NULL
   Lines2 <- Lines[!str_detect(Lines, "PHONY|^clean")]
@@ -64,7 +62,6 @@ get_commands <- function(Lines) {
   com
 }
 
-#' @export
 get_dependency <- function(Lines) {
   dep <- list()
   Lines2 <- Lines[!str_detect(Lines, "PHONY|^clean")]
@@ -81,13 +78,11 @@ get_dependency <- function(Lines) {
   dep
 }
 
-#Lines <- readLines(paste("Makefile"))
-#Lines <- Lines[!str_detect(Lines, "^#")]
-
 
 #' @export
 make_dat_fun <- function(x){
 #  Makefile <- "Makefile"
+  obj <- gr <- node_dat <- node_n <- start_id <- end_id <- NULL
   Lines <- readLines(paste(x))
   Lines <- Lines[!str_detect(Lines, "^#")]
 
@@ -97,16 +92,15 @@ make_dat_fun <- function(x){
 
   node_f <- c(com, target, unlist(dep)) %>%
     unique
-
   # order by lines
- # node_f <- data_frame(com, target, dep) %>%
+ # node_f <- tibble(com, target, dep) %>%
  #   unnest %>%
  #   t %>%
  #   as.vector %>%
  #   unique
 
-  node_dat <- data_frame(node_f) %>%
-    mutate(node_n = 1:nrow(.)) %>%
+  node_dat <- tibble(node_f) %>%
+    mutate(node_n = 1:n()) %>%
     mutate(obj = ifelse(str_detect(node_f, "\\.r$"),
                         "circle",
                         "square")) %>%
@@ -121,26 +115,26 @@ make_dat_fun <- function(x){
                         gr))
 
   node_id <- node_dat %>%
-    select(node_f, node_n)
+    dplyr::select(node_f, node_n)
 
-  com_to_target <- data_frame(com, target) %>%
+  com_to_target <- tibble(com, target) %>%
     left_join(node_id, by = c("com" = "node_f")) %>%
     rename(start_id = node_n) %>%
     left_join(node_id, by = c("target" = "node_f")) %>%
     rename(end_id = node_n) %>%
-    select(start_id, end_id) %>%
+    dplyr::select(start_id, end_id) %>%
     mutate(arrows = "to")
 
   com_to_target
 
-  target_to_com <- data_frame(dep, com) %>%
-    unnest %>%
-    select(dep, com) %>%
+  target_to_com <- tibble(dep, com) %>%
+    unnest(cols = c(dep)) %>%
+    dplyr::select(dep, com) %>%
     left_join(node_id, by = c("dep" = "node_f")) %>%
     rename(start_id = node_n) %>%
     left_join(node_id, by = c("com" = "node_f")) %>%
     rename(end_id = node_n) %>%
-    select(start_id, end_id) %>%
+    dplyr::select(start_id, end_id) %>%
     mutate(arrows = "to")
 
   target_to_com
@@ -168,7 +162,6 @@ make_dat_fun <- function(x){
 }
 
 
-#' @export
 debug_make <- function() {
   Lines <- run(commandline = "make --just-print")$stderr
   if (Lines == "") {
@@ -186,20 +179,4 @@ debug_make <- function() {
   c(changed3, making2) %>%
     unique
 }
-
-
-#plan <- make_dat_fun("Makefile")
-#debug(make_dat_fun)
-#plan <- make_dat_fun("test.txt")
-#debug_make()
-#run(commandline = "make --just-print")
-#vis_fun(plan)
-#moge <- function(x){
-#  Lines <- readLines(paste(x))
-#  Lines <- Lines[!str_detect(Lines, "^#")]
-#  Lines
-#}
-#moge("Makefile")
-#
-#dep <- get_dependency(moge("Makefile"))
 

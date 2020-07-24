@@ -4,14 +4,16 @@
 \alias{make_fun}
 \title{Make function}
 \usage{
-make_fun(path = NULL, output = "Makefile", dir_omit = NULL, clean = T)
+make_fun(path = NULL, output = "Makefile", dir_omit = NULL, clean = TRUE)
 }
 \arguments{
 \item{path}{Path to output file}
 
 \item{output}{Outputfile, typically `Makefile`}
 
-\item{clean}{Should return cleaned Makefile? (default = T)}
+\item{dir_omit}{moge}
+
+\item{clean}{Should return cleaned Makefile? (default = TRUE)}
 }
 \value{
 `make_fun()` returns the input `x` invisibly.
@@ -21,14 +23,13 @@ Make Makefile of your R project
 }
 \examples{
 tmp <- tempdir()
-ex_dir <- file.path(system.file("simple", package = "MakeR"), "")
-system(paste("tree", ex_dir))
-make_fun(ex_dir, "Makefile")
+ex_dir <- file.path(system.file("simple", package = "MakeR2"), "")
+system(paste("ls", ex_dir))
+make_fun(ex_dir)
+#system(paste0("cat ", ex_dir, "/Makefile"))
+##make_clean(paste0(ex_dir, "Makefile"))
 }
 \seealso{
 
-
-Other make functions: 
-\code{\link{make_clean}()}
 }
 \concept{make functions}

@@ -15,4 +15,5 @@
 #' @import stringr
 #' @import visNetwork
 #' @import processx
+#' @importFrom stats na.omit
 NULL

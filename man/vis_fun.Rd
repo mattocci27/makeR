@@ -17,9 +17,9 @@ Make Makefile of your R project
 }
 \examples{
 tmp <- tempdir()
-ex_dir <- file.path(system.file("simple", package = "MakeR"), "")
-system(paste("tree", ex_dir))
-make_fun(ex_dir, "Makefile", clean = FALSE)
+ex_dir <- file.path(system.file("simple", package = "MakeR2"), "")
+system(paste("ls", ex_dir))
+make_fun(ex_dir, clean = FALSE)
 plan <- make_dat_fun(paste0(ex_dir, "Makefile"))
 vis_fun(plan)
 }

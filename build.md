@@ -34,7 +34,6 @@ devtools::check(".", manual = TRUE)
 devtools::build_manual(".")
 devtools::build(".")
 
-
 devtools::install_deps()
 devtools::test()
 devtools::test_coverage()

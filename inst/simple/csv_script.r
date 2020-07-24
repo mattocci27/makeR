@@ -6,4 +6,4 @@ b <- rnorm(200)
 dat <- tibble(a,b) %>%
   mutate(sp = paste0("sp", rep(1:20, each = 10)))
 
-write_csv(dat, "./data/data.csv")
+write_csv(dat, "./inst/simple/data/data.csv")
