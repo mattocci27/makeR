@@ -23,4 +23,7 @@ make_fun(ex_dir, "Makefile", clean = FALSE)
 plan <- make_dat_fun(paste0(ex_dir, "Makefile"))
 vis_fun(plan)
 }
+\seealso{
+
+}
 \concept{vis functions}

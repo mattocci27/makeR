@@ -8,4 +8,7 @@ tests/*
 ^README\.md$
 ^cran-comments\.md$
 build.rmd
+build.md
 /inst/hpc/*
+docker/
+moge.rmd

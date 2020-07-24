@@ -124,9 +124,9 @@ make_dat_fun <- function(x){
     select(node_f, node_n)
 
   com_to_target <- data_frame(com, target) %>%
-    left_join(., node_id, by = c("com" = "node_f")) %>%
+    left_join(node_id, by = c("com" = "node_f")) %>%
     rename(start_id = node_n) %>%
-    left_join(., node_id, by = c("target" = "node_f")) %>%
+    left_join(node_id, by = c("target" = "node_f")) %>%
     rename(end_id = node_n) %>%
     select(start_id, end_id) %>%
     mutate(arrows = "to")
@@ -136,9 +136,9 @@ make_dat_fun <- function(x){
   target_to_com <- data_frame(dep, com) %>%
     unnest %>%
     select(dep, com) %>%
-    left_join(., node_id, by = c("dep" = "node_f")) %>%
+    left_join(node_id, by = c("dep" = "node_f")) %>%
     rename(start_id = node_n) %>%
-    left_join(., node_id, by = c("com" = "node_f")) %>%
+    left_join(node_id, by = c("com" = "node_f")) %>%
     rename(end_id = node_n) %>%
     select(start_id, end_id) %>%
     mutate(arrows = "to")
@@ -176,18 +176,17 @@ debug_make <- function() {
   }
   tmp <- str_split(Lines, "]") %>% unlist
   changed <- tmp[str_detect(tmp, "\\[Changed:")]
-  changed2 <- str_split(changed, "\\[Changed: ") %>%
-    sapply(., "[", 2)
+  changed2 <- str_split_fixed(changed, "\\[Changed: ", 2)[, 2]
   changed3 <- str_split(changed2, " ") %>%
     unlist %>%
     unique
   making <- tmp[str_detect(tmp, "\\[Making:")]
-  making2 <- str_split(making, "\\[Making: ") %>%
-    sapply(., "[", 2)
+  making2 <- str_split_fixed(making, "\\[Making: ", 2)[, 2]
 
   c(changed3, making2) %>%
     unique
 }
+
 
 #plan <- make_dat_fun("Makefile")
 #debug(make_dat_fun)
@@ -203,3 +202,4 @@ debug_make <- function() {
 #moge("Makefile")
 #
 #dep <- get_dependency(moge("Makefile"))
+

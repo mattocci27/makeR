@@ -4,7 +4,7 @@
 \alias{make_fun}
 \title{Make function}
 \usage{
-make_fun(path = NULL, output = "Makefile", clean = T)
+make_fun(path = NULL, output = "Makefile", dir_omit = NULL, clean = T)
 }
 \arguments{
 \item{path}{Path to output file}
@@ -26,6 +26,9 @@ system(paste("tree", ex_dir))
 make_fun(ex_dir, "Makefile")
 }
 \seealso{
-Other make functions: \code{\link{make_clean}}
+
+
+Other make functions: 
+\code{\link{make_clean}()}
 }
 \concept{make functions}

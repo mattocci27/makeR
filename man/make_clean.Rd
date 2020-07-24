@@ -24,6 +24,9 @@ Make Makefile of your R project
 #make_clean(paste0(ex_dir, "Makefile"))
 }
 \seealso{
-Other make functions: \code{\link{make_fun}}
+
+
+Other make functions: 
+\code{\link{make_fun}()}
 }
 \concept{make functions}

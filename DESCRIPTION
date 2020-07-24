@@ -1,14 +1,20 @@
-Package: MakeR
+Package: MakeR2
 Type: Package
-Title: Rapid Digital Image Analysis of Leaf Area
-Version: 0.0.1
-Date: 2019-07-03
+Title: Make R
+Version: 0.0.1.9000
+Date: 2020-07-23
 Author: Masatoshi Katabuchi <mattocci27@gmail.com>
 Maintainer: Masatoshi Katabuchi <mattocci27@gmail.com>
-Description: An interface for the image processing program 'ImageJ', which
-    allows a rapid digital image analysis for particle sizes. This package includes
-    function to write an 'ImageJ' macro which is optimized for a leaf area analysis by
-    default.
-License: GPL-2
-Depends: R (>= 3.0), dplyr, tidyr, ggplot2, readr, stringr, visNetwork, processx
-RoxygenNote: 6.1.1
+Description: moge moge
+License: MIT + file LICENSE
+Depends: 
+    R (>= 3.0)
+Imports:
+    dplyr,
+    tidyr, 
+    ggplot2, 
+    readr, 
+    stringr, 
+    visNetwork, 
+    processx
+RoxygenNote: 7.1.1

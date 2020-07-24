@@ -18,11 +18,11 @@ make_clean <- function(x){
   moge <- readLines(x)
   moge2 <- moge[-1:-3]
   df1 <- tibble(target = moge2[(1:length(moge2)) %% 3 == 1] %>%
-                str_split(., ":") %>% 
-                sapply(., "[[", 1),
+                str_split(":") %>% 
+                sapply("[[", 1),
               depends = moge2[(1:length(moge2)) %% 3 == 1] %>%
-                str_split(., ":") %>% 
-                sapply(., "[[", 2),
+                str_split(":") %>% 
+                sapply("[[", 2),
               commands = moge2[(1:length(moge2)) %% 3 == 2]) 
   tmp <- NULL
   for (i in 2:nrow(df1)) {
