@@ -2,11 +2,16 @@
 % Please edit documentation in R/vis.r
 \name{vis_fun}
 \alias{vis_fun}
+\alias{read_make}
 \title{vis function}
 \usage{
-vis_fun(make_dat, direction = "LR")
+vis_fun(plan, direction = "LR")
+
+read_make(x)
 }
 \arguments{
+\item{x}{path}
+
 \item{output}{Outputfile, typically `Makefile`}
 }
 \value{
@@ -20,10 +25,7 @@ tmp <- tempdir()
 ex_dir <- file.path(system.file("simple", package = "MakeR2"), "")
 system(paste("ls", ex_dir))
 make_fun(ex_dir, clean = FALSE)
-plan <- make_dat_fun(paste0(ex_dir, "Makefile"))
+plan <- read_make(paste0(ex_dir, "Makefile"))
 vis_fun(plan)
-}
-\seealso{
-
 }
 \concept{vis functions}

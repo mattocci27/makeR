@@ -9,7 +9,7 @@
 # Check
 roxygen2::roxygenise()
 devtools::document() 
-devtools::check("~/Dropbox/blog/makeR")
+devtools::check()
 devtools::build("~/Dropbox/blog/makeR")
 ```
 
@@ -20,6 +20,8 @@ devtools::check("~/Dropbox/blog/makeR")
 devtools::build("~/Dropbox/blog/makeR")
 install.packages("~/Dropbox/blog/MakeR_0.0.1.tar.gz")
 library(MakeR)
+
+docker build -t maker2 docker 
 
 
 tmp <- tempdir()

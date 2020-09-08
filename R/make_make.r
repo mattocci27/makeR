@@ -8,7 +8,6 @@
 #' @param dir_omit moge
 #' @param clean Should return cleaned Makefile? (default = TRUE)
 #' @return `make_fun()` returns the input `x` invisibly.
-#' @seealso
 #' @export
 #' @examples
 #' tmp <- tempdir()
@@ -20,7 +19,7 @@
 make_fun <- function(path = NULL, output = "Makefile", dir_omit = NULL , clean = TRUE){
   if (is.null(path)) path <- paste0(getwd(), "/") else path
 
-  files <- list.files(path, recursive = T, include.dir = T)
+  files <- list.files(path, recursive = T, include.dirs = T)
   files2 <- files[str_detect(files, "\\.r$|\\.rmd$|\\.html$")]
   #files2 <- files2[files2 != "make_make.r" & files2 != "vis.r"]
  
@@ -90,7 +89,7 @@ make_fun <- function(path = NULL, output = "Makefile", dir_omit = NULL , clean =
 
 
 target_first_line <- function(path) {
-  files <- list.files(path, recursive = T, include.dir = T)
+  files <- list.files(path, recursive = T, include.dirs = T)
   files2 <- files[str_detect(files, "\\.r$|\\.rmd$")]
   target_new <- NULL
   for (i in 1:length(files2)) {

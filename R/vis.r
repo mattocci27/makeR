@@ -4,23 +4,23 @@
 #'
 #' @family vis functions
 #' @param output Outputfile, typically `Makefile`
+#' @param x path
 #' @return `make_fun()` returns the input `x` invisibly.
-#' @seealso
 #' @examples
 #' tmp <- tempdir()
 #' ex_dir <- file.path(system.file("simple", package = "MakeR2"), "")
 #' system(paste("ls", ex_dir))
 #' make_fun(ex_dir, clean = FALSE)
-#' plan <- make_dat_fun(paste0(ex_dir, "Makefile"))
+#' plan <- read_make(paste0(ex_dir, "Makefile"))
 #' vis_fun(plan)
 #' @export
-vis_fun <- function(make_dat, direction = "LR") {
+vis_fun <- function(plan, direction = "LR") {
   visNetwork(
-             make_dat$nodes,
-             make_dat$edges,
-             shape = make_dat$shape,
-             arrows = make_dat$arrows,
-             group = make_dat$group,
+             plan$nodes,
+             plan$edges,
+             shape = plan$shape,
+             arrows = plan$arrows,
+             group = plan$group,
              width = "100%") %>%
   visHierarchicalLayout(direction = direction) %>%
   visGroups(groupname = "command",
@@ -33,7 +33,7 @@ vis_fun <- function(make_dat, direction = "LR") {
             shape = "triangle",
             color = "#FFC107") %>%
   visLegend(
-            addNodes = make_dat$shape)
+            addNodes = plan$shape)
 }
 
 get_target <- function(Lines) {
@@ -79,8 +79,9 @@ get_dependency <- function(Lines) {
 }
 
 
+#' @rdname vis_fun 
 #' @export
-make_dat_fun <- function(x){
+read_make <- function(x){
 #  Makefile <- "Makefile"
   obj <- gr <- node_dat <- node_n <- start_id <- end_id <- NULL
   Lines <- readLines(paste(x))

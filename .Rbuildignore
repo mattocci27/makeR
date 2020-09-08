@@ -3,7 +3,7 @@
 .git
 .gitignore
 Makefile
-LICENSE
+LICENSE.md
 tests/*
 ^README\.md$
 ^cran-comments\.md$

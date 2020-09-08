@@ -29,7 +29,4 @@ make_fun(ex_dir)
 #system(paste0("cat ", ex_dir, "/Makefile"))
 ##make_clean(paste0(ex_dir, "Makefile"))
 }
-\seealso{
-
-}
 \concept{make functions}
