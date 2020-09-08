@@ -6,6 +6,10 @@
 
 
 
+```
+devtools::install_github("mattocci27/makeR@dev")
+```
+
 
 ## Example
 
@@ -15,8 +19,9 @@ The current directory contains three R scripts (`csv_script1-3.r`) that generate
 tmp <- tempdir()
 ex_dir <- file.path(system.file("simple", package = "MakeR2"), "")
 system(paste("ls", ex_dir))
-make_fun(ex_dir, "Makefile")
-
+make_fun(ex_dir, clean = FALSE)
+plan <- read_make(paste0(ex_dir, "Makefile"))
+vis_fun(plan)
 ```
 
 ![Visualization of Makefile](network.png)
