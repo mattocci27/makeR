@@ -17,11 +17,12 @@
 #' #system(paste0("cat ", ex_dir, "/Makefile"))
 #' ##make_clean(paste0(ex_dir, "Makefile"))
 make_fun <- function(path = NULL, output = "Makefile", dir_omit = NULL , clean = TRUE){
+  
+
   if (is.null(path)) path <- paste0(getwd(), "/") else path
 
   files <- list.files(path, recursive = T, include.dirs = T)
-  files2 <- files[str_detect(files, "\\.r$|\\.rmd$|\\.html$")]
-  #files2 <- files2[files2 != "make_make.r" & files2 != "vis.r"]
+  files2 <- files[str_detect(files, "\\.r$|\\.rmd$")]
  
   if (!is.null(dir_omit)) {
     for (i in 1:length(dir_omit)) {
@@ -38,45 +39,52 @@ make_fun <- function(path = NULL, output = "Makefile", dir_omit = NULL , clean =
   for (i in 1:length(files2)) {
     Lines <- readLines(paste0(path, files2[i]))
     Lines2 <- Lines[!str_detect(Lines, "^#")]
-
+    com <- files2[i]
     dep <- Lines2[str_detect(Lines2, "read_csv|read.csv|read.delim|source|load|\\.stan$|read_delim|read_csv2")]
     dep2 <- str_split(dep, '"')
     dep3 <- sapply(dep2, "[", 2)
     dep4 <- str_c(na.omit(dep3), sep = " ", collapse = " ")
     target <- Lines2[str_detect(Lines2, "ggsave|write.csv|save.image|write_delim|write_csv|write_csv2|write_excel_csv|write_excel_csv_2|write_tsv")]
-    target2 <- str_split(target, '"')
-    target3 <- sapply(target2, "[", 2)
 
-    if (length(target3) > 0) target_TF <- is.na(target3) %>% unique
-    if (length(target_TF) > 1) target_TF <- TRUE
-    if ((length(dep2) > 0) && !target_TF) {
-
-    com <- files2[i]
-    if (length(dep) == 0){
-      dep4 <- com
-    }
-
-    if (str_detect(com, "\\.r$")) {
+    # Rscript 
+    if (str_detect(files2[i], "\\.r$")) {
+      if (length(target) == 0) next
       com2 <- paste("Rscript", com)
-    } else if (str_detect(com, "\\.rmd$")) {
-      com2 <- paste0("Rscript -e 'render('", com, "')'" )
-    } else if (str_detect(com, "\\.sh$")) {
-      com2 <- paste("sh ", com)
+      target2 <- str_split(target, '"')
+      target3 <- sapply(target2, "[", 2)
+      target4 <- as.list(target3)
     }
 
-    target4 <- as.list(target3)
-    tmp <- tibble(target4, dep4, com2) %>%
-      unnest(cols = c(target4))
-
-    if (length(target3) != 0) {
-      for (j in 1:nrow(tmp)) {
-        tmp2 <-tmp[j,]
-        writeLines(paste(tmp2$target4), out, sep = ": ")
-        writeLines(paste(tmp2$dep4), out, sep = "\n")
-        writeLines(paste0("\t", tmp2$com2), out, sep = "\n\n")
-       }
+    # Rmarkdown
+    if (str_detect(files2[i], "\\.rmd$")) {
+      rmd_name <- str_split(files2[i], "\\.rmd$")[[1]][1]
+      rmd_output <- str_c(rmd_name, c(".html", ".pdf", ".docx", ".md")) %>%
+        paste(collapse = "|")
+      rmd_output2 <- files[str_detect(files, rmd_output)]
+      if (length(rmd_output2) == 0) rmd_output2 <- str_c(rmd_name, ".html") 
+        com2 <- paste0("Rscript -e 'render('", com, "')'" )
+      if (length(target) == 0) {
+        target4 <- as.list(rmd_output2)
+      } else {
+        target2 <- str_split(target, '"')
+        target3 <- sapply(target2, "[", 2)
+        target4 <- as.list(rmd_output2, target3)
       }
     }
+
+    tmp <- tibble(target4, dep4, com2) %>%
+      unnest(cols = c(target4))
+ 
+    if (is.defined(target3)) {
+      if (length(target3) != 0) {
+        for (j in 1:nrow(tmp)) {
+          tmp2 <-tmp[j,]
+          writeLines(paste(tmp2$target4), out, sep = ": ")
+          writeLines(paste(tmp2$dep4), out, sep = "\n")
+          writeLines(paste0("\t", tmp2$com2), out, sep = "\n\n")
+         }
+        }
+      }
   }
   close(out)
   if (clean == T) {
@@ -87,6 +95,11 @@ make_fun <- function(path = NULL, output = "Makefile", dir_omit = NULL , clean =
   }
 }
 
+is.defined <- function(sym) {
+  sym <- deparse(substitute(sym))
+  env <- parent.frame()
+  exists(sym, env)
+}
 
 target_first_line <- function(path) {
   files <- list.files(path, recursive = T, include.dirs = T)

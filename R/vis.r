@@ -52,13 +52,18 @@ get_target <- function(Lines) {
 get_commands <- function(Lines) {
   com <- NULL
   Lines2 <- Lines[!str_detect(Lines, "PHONY|^clean")]
-  for (i in 1:(length(Lines2))) {
-    if (str_detect(Lines2[i], "\t")) {
-    #if (str_detect(Lines2[i], "  ")) {
-      tmp2 <- str_split(Lines2[i], " ")[[1]][2]
+  Lines3 <- Lines2[str_detect(Lines2, "\t")]
+  Lines4 <- Lines3[!str_detect(Lines3, "\t$|\tNA")]
+  for (i in 1:(length(Lines4))) {
+      if (str_detect(Lines4[i], "render")) {
+        tmp <- str_split(Lines4[i], "'")[[1]] %>% 
+          str_split("'")
+        tmp2 <- tmp[[3]]
+      } else {
+        tmp2 <- str_split(Lines4[i], " ")[[1]][2]
+      }
       com <- c(com, tmp2)
     }
-  }
   com
 }
 
@@ -93,6 +98,7 @@ read_make <- function(x){
 
   node_f <- c(com, target, unlist(dep)) %>%
     unique
+
   # order by lines
  # node_f <- tibble(com, target, dep) %>%
  #   unnest %>%
@@ -101,19 +107,20 @@ read_make <- function(x){
  #   unique
 
   node_dat <- tibble(node_f) %>%
-    mutate(node_n = 1:n()) %>%
-    mutate(obj = ifelse(str_detect(node_f, "\\.r$"),
+    mutate(node_n = 1:nrow(.)) %>%
+    mutate(obj = ifelse(str_detect(node_f, "\\.r$ | \\.rmd$"),
                         "circle",
                         "square")) %>%
     mutate(obj  = ifelse(str_detect(node_f, "\\.png$|\\.eps$|\\.pdf"),
                         "triangle",
                         obj)) %>%
-    mutate(gr = ifelse(str_detect(node_f, "\\.r$|\\.R$"),
+    mutate(gr = ifelse(str_detect(node_f, "\\.r$|\\.R$|\\.rmd$|\\.Rmd$"),
                         "command",
                         "data")) %>%
     mutate(gr = ifelse(str_detect(node_f, "\\.png$|\\.eps$"),
                         "figure",
                         gr))
+
 
   node_id <- node_dat %>%
     dplyr::select(node_f, node_n)
@@ -126,7 +133,7 @@ read_make <- function(x){
     dplyr::select(start_id, end_id) %>%
     mutate(arrows = "to")
 
-  com_to_target
+  #com_to_target
 
   target_to_com <- tibble(dep, com) %>%
     unnest(cols = c(dep)) %>%
@@ -138,12 +145,10 @@ read_make <- function(x){
     dplyr::select(start_id, end_id) %>%
     mutate(arrows = "to")
 
-  target_to_com
+  #target_to_com
 
   edge <- bind_rows(com_to_target, target_to_com) %>%
     unique
-
-  edge
 
   nodes <- data.frame(
     id = 1:nrow(node_dat),
@@ -156,8 +161,10 @@ read_make <- function(x){
     from = edge$start_id,
     to = edge$end_id,
     arrows = edge$arrows
-#  label = dep4$dep
   )
+
+  #nodes %>%
+  #  filter(str_detect(label, "rmd"))
 
   list(nodes = nodes, edges = edges)
 }
